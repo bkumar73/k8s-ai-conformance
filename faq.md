@@ -43,24 +43,34 @@ The revision cycle will be aligned with the release cycles of Kubernetes.
 
 ### Can I certify a platform or product that is built on top of an existing Kubernetes distribution?
 
-Yes. Your product does not need to be a standalone Kubernetes distribution to qualify for K8s AI Conformance. It is perfectly acceptable for your product to sit on top of a third-party distribution, provided that the underlying distribution is already Kubernetes Conformant.
+Yes. Your product does not need to be a standalone Kubernetes distribution to qualify for K8s AI Conformance. It is acceptable for your product to sit on top of a third-party distribution, provided that the underlying distribution is already Kubernetes Conformant.
 
-Building on a conformant distribution does not automatically make the layered product AI conformant. The layered product must independently demonstrate conformance for its own supported configuration.
+AI Conformance applies to a Kubernetes platform as a whole, the combination of infrastructure, Kubernetes, and runtime/add-ons that together meet the required (must-have) features. Building on a Kubernetes Conformant distribution does not automatically make the layered platform AI Conformant: the combined platform must still demonstrate that every required feature is met by some layer.
 
-#### What must a layered product demonstrate on its own?
+#### How are requirements satisfied across layers?
 
-<!-- TODO: Open for discussion — define the minimum requirements a layered product
-     must satisfy independently of the underlying platform's conformance. -->
+The required features are grouped into categories that map to the layers of a typical platform:
 
-The layered product is expected to:
-*   Run the conformance tests (or complete the self-assessment checklist) in its own supported and shipped configuration.
-*   Show that its packaging, integrations, default settings, and additional components do not break or degrade any conformance requirements.
+*   **Infrastructure and/or base Kubernetes** — networking, storage, accelerator enablement, and the APIs and behaviors covered by Kubernetes Conformance.
+*   **Runtime / add-ons** — schedulers, operators, device plugins, and the inference/training stacks layered on top.
 
-#### How should a layered product distinguish its conformance claim from the already-conformant base distribution's?
+For each required feature, the submission attaches a reference, an evidence link, or "doesn't apply", depending on which layer owns the feature in that platform.
 
-<!-- TODO: Open for discussion — clarify how the certification scope of a layered
-     product is distinguished from the already-conformant base distribution. -->
+> NOTE: A layered product needs to re-test for full AI conformance to prove its configurations did not break base platform's existing AI conformance. The submission references the base distribution's existing Kubernetes Conformance certification. A layered product must uniquely provide at least one feature to be considered AI Conformant.
 
-The layered product's submission should clearly articulate:
-*   What additional functionality, supported configuration, or validated behavior it contributes beyond the already-conformant base platform.
-*   How its claim is distinct from the underlying distribution's claim — i.e., what value or differentiation it adds that warrants a separate certification.
+#### What are the common patterns for layering on an existing Kubernetes platform?
+
+A product can layer on an existing Kubernetes platform, whether or not the base is itself AI Conformant, in two ways:
+
+1.  **Layered components that provide the same required (MUST-leve) feature.** The layered product replaces or supplements the base platform's implementation of an already-required capability. *Example as of May 2026:* `kai-scheduler` for gang scheduling.
+2.  **Layered components that provide optional (SHOULD-level) features.** The layered product introduces capabilities beyond the current required set, often anticipating features that may become required in a future revision. *Example as of May 2026:* `Dynamo` for disaggregated inference.
+
+In both cases, the submission identifies the layer and component that owns each requirement and provides the corresponding evidence for full AI conformance of the entire stack.
+
+#### How should a layered product distinguish its conformance claim from the base platform's?
+
+The submission should make clear, on a per-requirement basis, which layer owns each required feature and whether the layered product's contribution replaces, matches, or extends what the base platform provides. Useful things to call out include:
+
+*   Required features the layered product implements independently of the base platform.
+*   Required features that both the layered product and the base platform implement, but with meaningful differences (for example, a more advanced variant of the same capability).
+*   Features the layered product includes that are on the AI Conformance roadmap but are not yet required.
